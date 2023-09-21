@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { cron } from '@elysiajs/cron'
 import { html } from '@elysiajs/html'
+import { apollo, gql } from '@elysiajs/apollo'
 
 const app = new Elysia();
 
@@ -29,6 +30,33 @@ app.use(html())
             <h1>Hello World</h1>
         </body>
     </html>  `
+)
+
+app.use(
+  apollo({
+      typeDefs: gql`
+          type Book {
+              title: String
+              author: String
+          }
+
+          type Query {
+              books: [Book]
+          }
+      `,
+      resolvers: {
+          Query: {
+              books: () => {
+                  return [
+                      {
+                          title: 'Elysia',
+                          author: 'saltyAom'
+                      }
+                  ]
+              }
+          }
+      }
+  })
 )
 
 app.listen(3000)
